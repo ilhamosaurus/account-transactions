@@ -20,13 +20,26 @@ const register = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
   try {
-    await db.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        first_name,
-        last_name,
-      },
+    await db.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          first_name,
+          last_name,
+        },
+      });
+
+      if (!user) {
+        throw new Error('Failed to create user');
+      }
+
+      await tx.account.create({
+        data: {
+          userId: user.id,
+          balance: 0,
+        },
+      });
     });
 
     return res.status(201).send({
@@ -58,8 +71,13 @@ const login = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const user = await getUserByEmail(email);
+  if (!user) {
+    return res
+      .status(400)
+      .send({ status: 103, message: 'Username atau password salah' });
+  }
   const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid || !user) {
+  if (!isPasswordValid) {
     return res
       .status(400)
       .send({ status: 103, message: 'Username atau password salah' });

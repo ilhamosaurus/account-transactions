@@ -29,7 +29,7 @@ const decrypt = async (token) => {
 };
 
 const getBearerToken = async (req) => {
-  const header = req.headers['Authorization'];
+  const header = req.header('Authorization');
   if (!header) return null;
   const [type, token] = header.split(' ');
   if (type !== 'Bearer') return null;

@@ -32,4 +32,16 @@ const loginValidator = [
     .trim(),
 ];
 
-module.exports = { registerValidator, loginValidator };
+const editProfileValidator = [
+  check('first_name', 'First name minimal 3 karakter')
+    .isLength({ min: 3 })
+    .notEmpty()
+    .trim(),
+  check('last_name', 'Last name minimal 3 karakter')
+    .isLength({ min: 3 })
+    .notEmpty()
+    .trim(),
+];
+
+
+module.exports = { registerValidator, loginValidator, editProfileValidator };
