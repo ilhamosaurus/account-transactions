@@ -73,13 +73,13 @@ const login = async (req, res) => {
   const user = await getUserByEmail(email);
   if (!user) {
     return res
-      .status(400)
+      .status(401)
       .send({ status: 103, message: 'Username atau password salah' });
   }
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     return res
-      .status(400)
+      .status(401)
       .send({ status: 103, message: 'Username atau password salah' });
   }
 
@@ -93,7 +93,7 @@ const login = async (req, res) => {
 
     return res
       .status(200)
-      .send({ status: 0, message: 'Login sukses', data: token });
+      .send({ status: 0, message: 'Login sukses', data: { token: token } });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ error: `Failed to login user: ${error}` });

@@ -8,6 +8,7 @@ const { verifyToken } = require('./middleware/auth');
 const { getBalance, topupBalance } = require('./services/transaction');
 const { topupValidator } = require('./validator/transaction');
 const transactionRouter = require('./routes/transaction');
+const { swaggerUi, specs } = require('./swagger');
 require('dotenv').config();
 
 const app = express();
@@ -15,6 +16,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.post('/register', registerValidator, register);
 app.post('/login', loginValidator, login);
 app.use('/profile', profileRouter);

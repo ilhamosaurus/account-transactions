@@ -1,5 +1,4 @@
 const { check } = require('express-validator');
-const { getServiceCodes } = require('../data/service');
 
 const topupValidator = [
   check('top_up_amount', 'Nilai top up harus dengan angak positif')
