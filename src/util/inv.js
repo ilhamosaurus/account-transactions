@@ -9,17 +9,14 @@ const getInvNumber = async (userId) => {
   const date = `${today.getFullYear()}-${(today.getMonth() + 1)
     .toString()
     .padStart(2, '0')}-${today.getDate()}T00:00:00Z`;
-  const transactionNumber = await db.transaction.count({
-    where: {
-      accountId: account.id,
-      created_on: {
-        gte: date,
-      },
-    },
-  });
+  const transactionNumber = await db.$queryRaw`
+    SELECT COUNT(*)::bigint AS count 
+    FROM transactions
+    WHERE account_id = ${account.id} AND created_on >= ${date}`;
 
+  console.log('transactionNumber: ', Number(transactionNumber[0].count));
   const invDate = today.toJSON().slice(0, 10).split('-').reverse().join('');
-  const invNumber = `INV${invDate}-${(transactionNumber + 1)
+  const invNumber = `INV${invDate}-${(Number(transactionNumber[0].count) + 1)
     .toString()
     .padStart(3, '0')}`;
 

@@ -2,13 +2,9 @@ const db = require('../lib/db');
 
 const getAllBanners = async (req, res) => {
   try {
-    const banners = await db.banner.findMany({
-      select: {
-        banner_name: true,
-        banner_image: true,
-        description: true,
-      },
-    });
+    const banners = await db.$queryRaw`
+      SELECT banner_name, banner_image, description FROM banners`;
+
     res.status(200).send({
       status: 0,
       message: 'Sukses',

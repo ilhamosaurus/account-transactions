@@ -2,11 +2,9 @@ const db = require('../lib/db');
 
 const getServiceCodes = async () => {
   try {
-    const services = await db.service.findMany({
-      select: {
-        service_code: true,
-      },
-    });
+    const services = await db.$queryRaw`
+      SELECT service_code FROM services`;
+
     if (!services) return null;
     const serviceCodes = services.map((s) => s.service_code);
     return serviceCodes;
@@ -17,14 +15,13 @@ const getServiceCodes = async () => {
 
 const getServiceByCode = async (service_code) => {
   try {
-    const service = await db.service.findUnique({
-      where: {
-        service_code,
-      },
-    });
+    const service = await db.$queryRaw`
+      SELECT * FROM services
+      WHERE service_code = ${service_code}`;
+
     if (!service) return null;
 
-    return service;
+    return service[0];
   } catch (error) {
     console.error(error);
   }

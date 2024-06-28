@@ -7,7 +7,7 @@ const getProfile = async (req, res) => {
   const email = req.email;
 
   try {
-    const user = await getUserByEmail(email);
+    const user = (await getUserByEmail(email))[0];
     if (!user) {
       return res.status(404).send({ status: 103, message: 'User not found' });
     }
@@ -37,26 +37,27 @@ const updateProfile = async (req, res) => {
   const email = req.email;
 
   try {
-    const updatedProfile = await db.user.update({
-      where: {
-        email,
-      },
-      data: {
-        first_name,
-        last_name,
-      },
-      select: {
-        email: true,
-        first_name: true,
-        last_name: true,
-        image: true,
-      },
-    });
+    const updatedProfile = await db.$executeRaw`
+      UPDATE users
+      SET first_name = ${first_name}, last_name = ${last_name}
+      WHERE email = ${email}
+      RETURNING email, first_name, last_name, image`;
+
+    if (updatedProfile !== 1) {
+      return res.status(404).send({
+        status: 103,
+        message: 'User not found',
+        data: null,
+      });
+    }
 
     return res.status(200).send({
       status: 0,
       message: 'Update Profile berhasil',
-      data: updatedProfile,
+      data: {
+        first_name,
+        last_name,
+      },
     });
   } catch (error) {
     console.error(error);
