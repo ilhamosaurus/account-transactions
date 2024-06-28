@@ -233,6 +233,15 @@
  *    tags:
  *      - Transaction
  *    description: Get transaction history
+ *    parameters:
+ *      - in: query
+ *        name: offset
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
  *    security:
  *      - bearerAuth: []
  *    responses:
