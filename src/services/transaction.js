@@ -9,14 +9,9 @@ const getBalance = async (req, res) => {
   const id = req.userId;
 
   try {
-    const balance = await db.account.findUnique({
-      where: {
-        userId: id,
-      },
-      select: {
-        balance: true,
-      },
-    });
+    const balance = await db.$queryRaw`
+      SELECT balance FROM accounts
+      WHERE user_id = ${id}`;
 
     if (!balance) {
       return res
@@ -27,7 +22,7 @@ const getBalance = async (req, res) => {
     return res.status(200).send({
       status: 0,
       message: 'Get balance berhasil',
-      data: balance,
+      data: balance[0],
     });
   } catch (error) {
     console.error(error);
@@ -57,7 +52,7 @@ const topupBalance = async (req, res) => {
   try {
     const balance = await db.account.update({
       where: {
-        userId: id,
+        user_id: id,
       },
       data: {
         balance: {
@@ -139,7 +134,7 @@ const payment = async (req, res) => {
 
       return await tx.transaction.create({
         data: {
-          accountId: account.id,
+          account_id: account.id,
           transaction_type: Type.PAYMENT,
           invoice_number: invNumber,
           description: service.service_name,
@@ -185,23 +180,18 @@ const getTransactionHistory = async (req, res) => {
 
   try {
     if (skip && take) {
-      const transaction = await db.transaction.findMany({
-        where: {
-          accountId: account.id,
-        },
-        select: {
-          invoice_number: true,
-          created_on: true,
-          description: true,
-          total_amount: true,
-          transaction_type: true,
-        },
-        skip: (skip - 1) * take,
-        take: take,
-        orderBy: {
-          created_on: 'desc',
-        },
-      });
+      const transaction = await db.$queryRaw`
+        SELECT 
+          invoice_number, 
+          created_on, 
+          description, 
+          total_amount, 
+          transaction_type
+        FROM transactions
+        WHERE account_id = ${account.id}
+        ORDER BY created_on DESC
+        LIMIT ${take}
+        OFFSET ${(skip - 1) * take}`;
 
       if (!transaction || transaction.length === 0) {
         return res
@@ -219,21 +209,18 @@ const getTransactionHistory = async (req, res) => {
         },
       });
     }
-    const transaction = await db.transaction.findMany({
-      where: {
-        accountId: account.id,
-      },
-      select: {
-        invoice_number: true,
-        created_on: true,
-        description: true,
-        total_amount: true,
-        transaction_type: true,
-      },
-      orderBy: {
-        created_on: 'desc',
-      },
-    });
+    const transaction = await db.$queryRaw`
+        SELECT 
+          invoice_number, 
+          created_on, 
+          description, 
+          total_amount, 
+          transaction_type
+        FROM transactions
+        WHERE account_id = ${account.id}
+        ORDER BY created_on DESC
+        LIMIT ${take}
+        OFFSET ${(skip - 1) * take}`;
 
     if (!transaction || transaction.length === 0) {
       return res

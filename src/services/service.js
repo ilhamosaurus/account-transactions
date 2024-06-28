@@ -2,7 +2,7 @@ const db = require('../lib/db');
 
 const getAllServices = async (req, res) => {
   try {
-    const services = await db.service.findMany();
+    const services = await db.$queryRaw`SELECT * FROM services`;
 
     res.status(200).send({
       status: 0,

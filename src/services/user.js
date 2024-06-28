@@ -36,7 +36,7 @@ const register = async (req, res) => {
 
       await tx.account.create({
         data: {
-          userId: user.id,
+          user_id: user.id,
           balance: 0,
         },
       });
@@ -70,12 +70,13 @@ const login = async (req, res) => {
   }
   const email = req.body.email;
   const password = req.body.password;
-  const user = await getUserByEmail(email);
+  const user = (await getUserByEmail(email))[0];
   if (!user) {
     return res
       .status(401)
       .send({ status: 103, message: 'Username atau password salah' });
   }
+
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     return res
