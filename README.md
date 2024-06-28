@@ -1,6 +1,6 @@
 ## Description
 
-# Bookself API
+# Account Transactions API
 
 Hello if you're reading this it means you here to look at this techincal test result of some companies that i applied to. Please kindly check this url to look at the documentation https://account-transactions-production.up.railway.app/api-docs/
 
