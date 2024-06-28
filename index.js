@@ -1,14 +1,14 @@
 const express = require('express');
-const serviceRouter = require('./routes/service');
-const { registerValidator, loginValidator } = require('./validator/user');
-const { register, login } = require('./services/user');
-const profileRouter = require('./routes/profile');
-const bannerRouter = require('./routes/banner');
-const { verifyToken } = require('./middleware/auth');
-const { getBalance, topupBalance } = require('./services/transaction');
-const { topupValidator } = require('./validator/transaction');
-const transactionRouter = require('./routes/transaction');
-const { swaggerUi, specs } = require('./swagger');
+const serviceRouter = require('./src/routes/service');
+const { registerValidator, loginValidator } = require('./src/validator/user');
+const { register, login } = require('./src/services/user');
+const profileRouter = require('./src/routes/profile');
+const bannerRouter = require('./src/routes/banner');
+const { verifyToken } = require('./src/middleware/auth');
+const { getBalance, topupBalance } = require('./src/services/transaction');
+const { topupValidator } = require('./src/validator/transaction');
+const transactionRouter = require('./src/routes/transaction');
+const { swaggerUi, specs } = require('./src/swagger');
 require('dotenv').config();
 
 const app = express();
