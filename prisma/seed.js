@@ -45,8 +45,8 @@ const bannerSeeding = async () => {
 };
 
 const main = async () => {
-  // await serviceSeeding();
-  // await bannerSeeding();
+  await serviceSeeding();
+  await bannerSeeding();
 };
 
 main()

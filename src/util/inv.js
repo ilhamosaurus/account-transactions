@@ -14,7 +14,6 @@ const getInvNumber = async (userId) => {
     FROM transactions
     WHERE account_id = ${account.id} AND created_on >= ${date}`;
 
-  console.log('transactionNumber: ', Number(transactionNumber[0].count));
   const invDate = today.toJSON().slice(0, 10).split('-').reverse().join('');
   const invNumber = `INV${invDate}-${(Number(transactionNumber[0].count) + 1)
     .toString()

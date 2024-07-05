@@ -12,7 +12,7 @@ const { swaggerUi, specs } = require('./src/swagger');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3879;
 
 app.use(express.json());
 
